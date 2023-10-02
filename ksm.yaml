@@ -71,6 +71,10 @@ scrape_configs:
 kube_pod_status_phase
 #This query, for example, returns the current phase of each pod in the cluster.
 
+#Make sure to adapt the configurations based on your specific needs and environment. 
+#This is a basic setup, and you might need to adjust it according to your security policies and Prometheus setup. 
+#Always refer to the official documentation for the latest information and best practices.
+
 
 
 
