@@ -1,0 +1,77 @@
+#Deploying kube-state-metrics in a Kubernetes cluster involves creating the necessary 
+#Kubernetes resources, such as Deployments and Services. 
+#Here's a basic example of how you can deploy kube-state-metrics and 
+#expose its metrics for consumption by Prometheus:
+
+
+# Create  namespace but THIS is optional
+kubectl create namespace monitoring
+
+2. Deploy kube-state-metrics:
+#Apply the kube-state-metrics deployment manifest. 
+#You can use the official manifest provided by the kube-state-metrics project.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-state-metrics
+  namespace: monitoring # Use the namespace created in step 1
+spec:
+  selector:
+    matchLabels:
+      app: kube-state-metrics
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: kube-state-metrics
+    spec:
+      containers:
+      - name: kube-state-metrics
+        image: quay.io/coreos/kube-state-metrics:v2.2.0
+        ports:
+        - containerPort: 8181
+
+# Apply the deployment:
+kubectl apply -f (kube-state-metrics-deployment.yaml) the name of the KSM manifest file
+
+#3. Expose kube-state-metrics:
+#Create a Service to expose kube-state-metrics within the cluster. 
+#Save the following content to a file named kube-state-metrics-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kube-state-metrics
+  namespace: monitoring
+spec:
+  selector:
+    app: kube-state-metrics
+  ports:
+    - protocol: TCP
+      port: 8181
+      targetPort: 8181
+  type: ClusterIP
+
+# Apply the service:
+kubectl apply -f kube-state-metrics-service.yaml
+
+#4. Configure Prometheus to Scrape Metrics:
+#Update your Prometheus configuration to scrape metrics from the kube-state-metrics service. 
+#Add the following to your Prometheus configuration:
+scrape_configs:
+- job_name: 'kube-state-metrics'
+  static_configs:
+  - targets: ['kube-state-metrics.monitoring.svc:8181']
+
+5. Restart Prometheus (If Needed):
+#If Prometheus is already running, restart it to pick up the new configuration.
+
+6. Accessing Metrics:
+#Now, Prometheus should start scraping metrics from kube-state-metrics, 
+#and you can access them using Prometheus queries or visualize them in Grafana.
+kube_pod_status_phase
+#This query, for example, returns the current phase of each pod in the cluster.
+
+
+
+
+
