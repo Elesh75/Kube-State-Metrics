@@ -45,5 +45,7 @@ Automation and Scaling:
 Can be used to automate scaling decisions based on the observed state of the cluster.
 
    Example Query:
-Here's an example Prometheus query that uses kube-state-metrics metrics to get the current number of running pods for a specific deployment:
+Here's an example Prometheus query that uses kube-state-metrics metrics 
+to get the current number of running pods for a specific deployment:
+    
      kube_deployment_status_replicas_available{deployment="your-deployment-name"}
